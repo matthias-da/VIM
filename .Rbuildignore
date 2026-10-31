@@ -22,3 +22,9 @@ pkgdown
 ^cran-comments\.md$
 ^vignettes/.*\.Rmd\.orig$
 ^vignettes/precompute\.R$
+^vignettes/(vimpute|tabiclImpute)-benchmark\.Rmd$
+^vignettes/figures/(benchmark-mar|tabicl2-benchmark)-.*\.png$
+^\.superpowers$
+
+^\.local$
+__pycache__

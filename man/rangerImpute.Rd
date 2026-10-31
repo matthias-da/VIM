@@ -11,7 +11,9 @@ rangerImpute(
   imp_suffix = "imp",
   ...,
   verbose = FALSE,
-  median = FALSE
+  median = FALSE,
+  edit_rules = NULL,
+  edit_control = NULL
 )
 }
 \arguments{
@@ -32,6 +34,11 @@ and evaluating the RF-Model.}
 
 \item{median}{\code{TRUE}/\code{FALSE}. If \code{TRUE}, ranger regression predictions are
 aggregated tree-wise using the median (via \code{\link[=vimpute]{vimpute()}}).}
+
+\item{edit_rules}{Optional model-agnostic validator, applied jointly to the
+assembled imputed LHS columns after all target fits; see \code{\link[=vimpute]{vimpute()}}.}
+
+\item{edit_control}{Control object or named list; see \code{\link[=vimpute_edit_control]{vimpute_edit_control()}}.}
 }
 \value{
 the imputed data set.
@@ -41,7 +48,13 @@ Impute missing values based on random-forest models via \code{\link[=vimpute]{vi
 }
 \examples{
 data(sleep)
-rangerImpute(Dream+NonD~BodyWgt+BrainWgt,data=sleep)
+# rangerImpute() runs on vimpute(), which VIM backs with the suggested
+# mlr3 stack -- skip the example where that stack is not installed.
+if (requireNamespace("mlr3", quietly = TRUE) &&
+    requireNamespace("mlr3learners", quietly = TRUE) &&
+    requireNamespace("mlr3pipelines", quietly = TRUE)) {
+  rangerImpute(Dream+NonD~BodyWgt+BrainWgt,data=sleep)
+}
 }
 \seealso{
 Other imputation methods: 

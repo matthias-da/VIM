@@ -12,7 +12,9 @@ xgboostImpute(
   verbose = FALSE,
   nrounds = 100,
   objective = NULL,
-  ...
+  ...,
+  edit_rules = NULL,
+  edit_control = NULL
 )
 }
 \arguments{
@@ -36,6 +38,11 @@ argument passed to \code{\link[xgboost:xgboost]{xgboost::xgboost()}}}
 argument passed to \code{\link[xgboost:xgboost]{xgboost::xgboost()}}}
 
 \item{...}{Arguments passed to \code{\link[xgboost:xgboost]{xgboost::xgboost()}}}
+
+\item{edit_rules}{Optional model-agnostic validator, applied jointly to the
+assembled imputed LHS columns after all target fits; see \code{\link[=vimpute]{vimpute()}}.}
+
+\item{edit_control}{Control object or named list; see \code{\link[=vimpute_edit_control]{vimpute_edit_control()}}.}
 }
 \value{
 the imputed data set.
@@ -50,8 +57,14 @@ sleepx$Pred <- as.factor(LETTERS[sleepx$Pred])
 sleepx$Pred[1] <- NA
 # a numeric and a factor target imputed at once; nrounds = 30 keeps the
 # example fast (the default is 100 boosting rounds)
-imp <- xgboostImpute(Dream + Pred ~ BodyWgt + BrainWgt, data = sleepx, nrounds = 30)
-head(imp)
+# xgboostImpute() runs on vimpute(), which VIM backs with the suggested
+# mlr3 stack -- skip the example where that stack is not installed.
+if (requireNamespace("mlr3", quietly = TRUE) &&
+    requireNamespace("mlr3learners", quietly = TRUE) &&
+    requireNamespace("mlr3pipelines", quietly = TRUE)) {
+  imp <- xgboostImpute(Dream + Pred ~ BodyWgt + BrainWgt, data = sleepx, nrounds = 30)
+  head(imp)
+}
 }
 \seealso{
 Other imputation methods: 
