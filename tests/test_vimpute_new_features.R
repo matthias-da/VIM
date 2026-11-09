@@ -144,8 +144,8 @@ show_test("4) with() auf vimmi")
 shift <- 5
 with_res <- with(res2, y_num + x2 + shift)
 
-# Seit 7.3.0 liefert with() ein mice-kompatibles mira-Objekt; die m
-# Einzelergebnisse stehen in $analyses.
+# Since 7.3.0, with() returns a mice-compatible mira object.
+# The m individual results are stored in $analyses.
 check(inherits(with_res, "mira"), "with(vimmi, ...) sollte ein mira-Objekt liefern.")
 check(length(with_res$analyses) == 3L, "with(vimmi, ...) sollte ein Ergebnis pro Imputation liefern.")
 check(all(vapply(with_res$analyses, length, integer(1)) == nrow(dt2)), "with(vimmi, ...) hat unerwartete Laengen geliefert.")
@@ -258,7 +258,7 @@ cat("robgam-Klassifikation funktioniert.\n")
 
 show_test("12) Warnung bei m > 1 ohne Unsicherheitsquelle")
 dt10 <- make_data(100L)
-warn_text <- NULL
+warn_text <- character()
 
 withCallingHandlers(
   vimpute(
@@ -274,17 +274,17 @@ withCallingHandlers(
     verbose = TRUE
   ),
   warning = function(w) {
-    warn_text <<- conditionMessage(w)
+    warn_text <<- c(warn_text, conditionMessage(w))
     invokeRestart("muffleWarning")
   }
 )
 
-check(grepl("all imputations will be identical", warn_text, fixed = TRUE), "Warnung fuer identische Imputationen wurde nicht gefunden.")
+check(any(grepl("all imputations will be identical", warn_text, fixed = TRUE)), "Warnung fuer identische Imputationen wurde nicht gefunden.")
 cat("Warnung fuer m > 1 ohne Unsicherheit funktioniert.\n")
 
 show_test("13) pmm hat Vorrang vor uncert")
 dt11 <- make_data(100L)
-warn_text2 <- NULL
+warn_text2 <- character()
 
 withCallingHandlers(
   vimpute(
@@ -298,12 +298,12 @@ withCallingHandlers(
     verbose = TRUE
   ),
   warning = function(w) {
-    warn_text2 <<- conditionMessage(w)
+    warn_text2 <<- c(warn_text2, conditionMessage(w))
     invokeRestart("muffleWarning")
   }
 )
 
-check(grepl("'pmm' takes precedence", warn_text2, fixed = TRUE), "Warnung fuer pmm-Vorrang wurde nicht gefunden.")
+check(any(grepl("'pmm' takes precedence", warn_text2, fixed = TRUE)), "Warnung fuer pmm-Vorrang wurde nicht gefunden.")
 cat("Warnung fuer pmm-Vorrang funktioniert.\n")
 
 show_test("14) as.mids.vimmi optional")
